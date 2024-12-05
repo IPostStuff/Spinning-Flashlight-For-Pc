@@ -52,7 +52,7 @@ title.Parent = topFrame
 
 local toggleButton = Instance.new("TextButton")
 toggleButton.Size = UDim2.new(0, 200, 0, 50)
-toggleButton.Position = UDim2.new(0.5, -210, 0.6, -25)  -- Slightly moved closer to the left
+toggleButton.Position = UDim2.new(0.5, -210, 0.6, -25)
 toggleButton.Text = "Start"
 toggleButton.Font = Enum.Font.GothamBold
 toggleButton.TextSize = 25
@@ -67,7 +67,7 @@ buttonCorner.Parent = toggleButton
 
 local warningButton = Instance.new("TextButton")
 warningButton.Size = UDim2.new(0, 200, 0, 50)
-warningButton.Position = UDim2.new(0.5, 40, 0.6, -25)  -- Moved more to the right
+warningButton.Position = UDim2.new(0.5, 40, 0.6, -25)
 warningButton.Text = "Warning: Do Not Press"
 warningButton.Font = Enum.Font.GothamBold
 warningButton.TextSize = 20
@@ -81,28 +81,14 @@ warningButtonCorner.CornerRadius = UDim.new(0, 15)
 warningButtonCorner.Parent = warningButton
 
 local isHolding = false
+local UserInputService = game:GetService("UserInputService")
 
--- Function to simulate a left mouse click hold for PC
-local function holdLeftMouse(duration)
-    local startTime = tick()
-    -- Simulate holding the left mouse button down
-    game:GetService("UserInputService"):InputBegan(
-        Instance.new("InputObject", game:GetService("UserInputService")),
-        false
-    )
-
-    while isHolding and tick() - startTime < duration do
+local function holdLeftMouse()
+    while isHolding do
         wait(0.1)
     end
-
-    -- Simulate mouse release after holding for the duration
-    game:GetService("UserInputService"):InputEnded(
-        Instance.new("InputObject", game:GetService("UserInputService")),
-        false
-    )
 end
 
--- Function to display the black screen and kick the player
 local function turnScreenBlack()
     local blackFrame = Instance.new("Frame")
     blackFrame.Size = UDim2.new(1, 0, 1, 0)
@@ -124,26 +110,21 @@ local function turnScreenBlack()
 
     wait(3)
 
-    -- After a short delay, remove the black screen
     blackFrame:Destroy()
 
-    -- Kick the player after showing the message
     player:Kick("You have been trolled! Rejoin to continue playing.")
 end
 
--- Start/Stop button toggle functionality
 toggleButton.MouseButton1Click:Connect(function()
     isHolding = not isHolding
     if isHolding then
         toggleButton.Text = "Stop"
-        -- Simulate holding the left click for 60 seconds
-        holdLeftMouse(60)
+        holdLeftMouse()
     else
         toggleButton.Text = "Start"
     end
 end)
 
--- Warning button functionality
 warningButton.MouseButton1Click:Connect(function()
     turnScreenBlack()
 end)
