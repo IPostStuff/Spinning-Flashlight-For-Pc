@@ -1,0 +1,149 @@
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = playerGui
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 500, 0, 200)
+mainFrame.Position = UDim2.new(0.35, -250, 0.4, -100)
+mainFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Draggable = true
+mainFrame.Parent = screenGui
+
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 20)
+uiCorner.Parent = mainFrame
+
+local borderFrame = Instance.new("Frame")
+borderFrame.Size = UDim2.new(1, 6, 1, 6)
+borderFrame.Position = UDim2.new(0, -3, 0, -3)
+borderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+borderFrame.BorderSizePixel = 0
+borderFrame.ZIndex = 0
+borderFrame.Parent = mainFrame
+
+local borderCorner = Instance.new("UICorner")
+borderCorner.CornerRadius = UDim.new(0, 22)
+borderCorner.Parent = borderFrame
+
+local topFrame = Instance.new("Frame")
+topFrame.Size = UDim2.new(1, 0, 0.4, 0)
+topFrame.Position = UDim2.new(0, 0, 0, 0)
+topFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+topFrame.BorderSizePixel = 0
+topFrame.Parent = mainFrame
+
+local topUiCorner = Instance.new("UICorner")
+topUiCorner.CornerRadius = UDim.new(0, 20)
+topUiCorner.Parent = topFrame
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 1, 0)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "Made by Blackwateryt"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 18
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Parent = topFrame
+
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(0, 200, 0, 50)
+toggleButton.Position = UDim2.new(0.5, -210, 0.6, -25)  -- Slightly moved closer to the left
+toggleButton.Text = "Start"
+toggleButton.Font = Enum.Font.GothamBold
+toggleButton.TextSize = 25
+toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+toggleButton.BorderSizePixel = 0
+toggleButton.Parent = mainFrame
+
+local buttonCorner = Instance.new("UICorner")
+buttonCorner.CornerRadius = UDim.new(0, 15)
+buttonCorner.Parent = toggleButton
+
+local warningButton = Instance.new("TextButton")
+warningButton.Size = UDim2.new(0, 200, 0, 50)
+warningButton.Position = UDim2.new(0.5, 40, 0.6, -25)  -- Moved more to the right
+warningButton.Text = "Warning: Do Not Press"
+warningButton.Font = Enum.Font.GothamBold
+warningButton.TextSize = 20
+warningButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+warningButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+warningButton.BorderSizePixel = 0
+warningButton.Parent = mainFrame
+
+local warningButtonCorner = Instance.new("UICorner")
+warningButtonCorner.CornerRadius = UDim.new(0, 15)
+warningButtonCorner.Parent = warningButton
+
+local isHolding = false
+
+-- Function to simulate a left mouse click hold for PC
+local function holdLeftMouse(duration)
+    local startTime = tick()
+    -- Simulate holding the left mouse button down
+    game:GetService("UserInputService"):InputBegan(
+        Instance.new("InputObject", game:GetService("UserInputService")),
+        false
+    )
+
+    while isHolding and tick() - startTime < duration do
+        wait(0.1)
+    end
+
+    -- Simulate mouse release after holding for the duration
+    game:GetService("UserInputService"):InputEnded(
+        Instance.new("InputObject", game:GetService("UserInputService")),
+        false
+    )
+end
+
+-- Function to display the black screen and kick the player
+local function turnScreenBlack()
+    local blackFrame = Instance.new("Frame")
+    blackFrame.Size = UDim2.new(1, 0, 1, 0)
+    blackFrame.Position = UDim2.new(0, 0, 0, 0)
+    blackFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    blackFrame.BackgroundTransparency = 0
+    blackFrame.Parent = screenGui
+    
+    local blackText = Instance.new("TextLabel")
+    blackText.Size = UDim2.new(1, 0, 1, 0)
+    blackText.Position = UDim2.new(0, 0, 0, 0)
+    blackText.BackgroundTransparency = 1
+    blackText.Text = "Haha get trolled! You may now rejoin."
+    blackText.Font = Enum.Font.GothamBold
+    blackText.TextSize = 30
+    blackText.TextColor3 = Color3.fromRGB(255, 0, 0)
+    blackText.TextStrokeTransparency = 0.5
+    blackText.Parent = blackFrame
+
+    wait(3)
+
+    -- After a short delay, remove the black screen
+    blackFrame:Destroy()
+
+    -- Kick the player after showing the message
+    player:Kick("You have been trolled! Rejoin to continue playing.")
+end
+
+-- Start/Stop button toggle functionality
+toggleButton.MouseButton1Click:Connect(function()
+    isHolding = not isHolding
+    if isHolding then
+        toggleButton.Text = "Stop"
+        -- Simulate holding the left click for 60 seconds
+        holdLeftMouse(60)
+    else
+        toggleButton.Text = "Start"
+    end
+end)
+
+-- Warning button functionality
+warningButton.MouseButton1Click:Connect(function()
+    turnScreenBlack()
+end)
